@@ -6,7 +6,14 @@ const os=require('node:os');
 const assert=require('node:assert/strict');
 const temp=fs.mkdtempSync(path.join(os.tmpdir(),'athlete-logic-'));
 try{
- execFileSync('tsc',['--target','ES2022','--module','commonjs','--skipLibCheck','--outDir',temp,'src/utils/metrics.ts','src/data/schema.ts'],{cwd:path.join(__dirname,'..'),stdio:'inherit'});
+ // Run the isolated compilation outside the app's tsconfig directory.
+ // TypeScript 6 rejects passing source files while a tsconfig.json is present
+ // (TS5112); this method also works with TypeScript 5.x.
+ const srcDir=path.join(__dirname,'..','src');
+ execFileSync('tsc',['--target','ES2022','--module','commonjs','--skipLibCheck',
+   '--rootDir',srcDir,'--outDir',temp,
+   path.join(srcDir,'utils','metrics.ts'),path.join(srcDir,'data','schema.ts')],
+   {cwd:temp,stdio:'inherit'});
  const m=require(path.join(temp,'utils','metrics.js'));
  const e=[{id:'1',date:'2026-01-01',kg:100},{id:'2',date:'2026-01-08',kg:99},{id:'3',date:'2026-01-16',kg:98},{id:'4',date:'2026-01-23',kg:97}];
  assert.equal(m.validWeight(100),true);assert.equal(m.validWeight(null),false);assert.equal(m.numberInput('82,5'),82.5);assert.equal(m.numberInput(''),null);assert.equal(m.numberInput('12abc'),null);

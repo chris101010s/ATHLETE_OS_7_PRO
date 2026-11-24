@@ -13,9 +13,8 @@ on:
       - 'src/**'
       - 'docs/**'
       - 'tests/**'
-      - 'scripts/fetch-exercises.mjs'
+      - 'scripts/**'
       - 'modules/**'
-      - 'scripts/build-ios-unsigned.sh'
       - '.github/workflows/ios-unsigned.yml'
 permissions:
   contents: read
