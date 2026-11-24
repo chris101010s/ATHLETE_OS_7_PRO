@@ -11,7 +11,7 @@ xcodebuild -workspace "$WS" -scheme "$SCHEME" \
   -configuration Release -sdk iphoneos -destination 'generic/platform=iOS' \
   -derivedDataPath "$ROOT/artifacts/DerivedData" \
   CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY='' \
-  build
+  build 2>&1 | tee "$ROOT/artifacts/xcodebuild.log"
 APP="$(find "$ROOT/artifacts/DerivedData/Build/Products/Release-iphoneos" -maxdepth 1 -name '*.app' -print -quit)"
 if [[ -z "$APP" ]]; then echo 'ERROR: iPhone .app nicht gefunden.' >&2; exit 1; fi
 [[ -f "$APP/Info.plist" ]] || { echo 'ERROR: Info.plist fehlt.' >&2; exit 1; }

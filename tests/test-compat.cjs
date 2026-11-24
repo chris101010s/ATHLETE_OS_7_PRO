@@ -15,4 +15,7 @@ ok(read('.github/workflows/ios-unsigned.yml').includes('xcode-27'),'macOS Build-
 ok(read('scripts/build-ios-unsigned.sh').includes('CODE_SIGNING_ALLOWED=NO'),'unsignierter Build nicht konfiguriert');
 ok(read('src/screens/Gym.tsx').includes('activeExerciseId'),'persistente aktive Übung fehlt');
 ok(read('src/screens/Gym.tsx').includes('editDraft'),'Satz-Entwürfe überstehen Tabwechsel nicht');
+ok(/^\/ios\/$/m.test(read('.gitignore')),'Root-anchored iOS ignore rule fehlt');
+ok(!/^ios\/$/m.test(read('.gitignore')),'Ungeankerte ios/ Regel blendet Swift-Modul aus');
+ok(read('.github/workflows/ios-unsigned.yml').includes('scripts/preflight.cjs'),'Frühe Quellenprüfung fehlt');
 console.log(`PASS: ${checks} native Build-/Storage-Contract-Prüfungen. Kein Ersatz für Xcode.`);

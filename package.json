@@ -12,14 +12,15 @@
     "test:logic": "node scripts/check-logic.cjs",
     "catalog:fetch": "node scripts/fetch-exercises.mjs",
     "test:catalog": "node tests/test-catalog.cjs",
-    "check": "npm run test:syntax && npm run test:logic && npm run test:catalog && npm run test:csv && npm run test:validation && npm run test:workout && npm run test:compat && npm run test:storage && npm run test:advanced && npm run typecheck",
+    "check": "npm run test:preflight && npm run test:syntax && npm run test:logic && npm run test:catalog && npm run test:csv && npm run test:validation && npm run test:workout && npm run test:compat && npm run test:storage && npm run test:advanced && npm run typecheck",
     "test:syntax": "node scripts/check-project.mjs",
     "test:csv": "node tests/test-csv.cjs",
     "test:validation": "node tests/test-validation.cjs",
     "test:workout": "node tests/test-workout.cjs",
     "test:compat": "node tests/test-compat.cjs",
     "test:storage": "node tests/test-storage.cjs",
-    "test:advanced": "node tests/test-advanced.cjs"
+    "test:advanced": "node tests/test-advanced.cjs",
+    "test:preflight": "node scripts/preflight.cjs"
   },
   "dependencies": {
     "expo": "~58.0.26",
@@ -40,8 +41,8 @@
     "react-native-view-shot": "6.1.1"
   },
   "devDependencies": {
-    "@types/react": "~19.2.0",
-    "typescript": "~5.9.2"
+    "@types/react": "~19.3.0",
+    "typescript": "~6.0.3"
   },
   "engines": {
     "node": ">=22.13.0"

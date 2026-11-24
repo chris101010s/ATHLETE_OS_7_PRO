@@ -25,9 +25,11 @@ jobs:
     timeout-minutes: 65
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
+      - name: Quelldateien und Git-Tracking früh prüfen
+        run: node scripts/preflight.cjs
       - name: Node.js 22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: '22.16.0'
       - name: Verfügbare Xcode-Version anzeigen
@@ -49,13 +51,28 @@ jobs:
         run: |
           cd ios
           pod install
+      - name: OCR-Modul in CocoaPods pruefen
+        run: |
+          test -f ios/Podfile.lock
+          if ! grep -q 'AthleteOcr' ios/Podfile.lock; then
+            echo '::error::AthleteOcr ist nicht in Podfile.lock enthalten. Expo Autolinking oder Podspec pruefen.'
+            exit 1
+          fi
       - name: App ohne Apple-Signatur bauen
         run: bash scripts/build-ios-unsigned.sh
         env:
           CI: '1'
           EXPO_NO_TELEMETRY: '1'
+      - name: Xcode-Fehlerlog bereitstellen
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: ATHLETE_OS_Xcode_Fehlerlog
+          path: artifacts/xcodebuild.log
+          if-no-files-found: ignore
+          retention-days: 7
       - name: Unsignierte IPA als Download bereitstellen
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ATHLETE_OS_unsigned_IPA
           path: artifacts/ATHLETE_OS_unsigned.ipa
