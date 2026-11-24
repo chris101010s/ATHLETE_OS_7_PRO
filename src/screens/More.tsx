@@ -1,5 +1,6 @@
 import React,{useRef,useState} from 'react';
 import {View,Text,Pressable,Alert,Switch,Linking,ScrollView} from 'react-native';
+import type {ViewInstance} from 'react-native';
 import {useAthlete} from '../data/context';
 import {Habit,Nutrition,emptyData} from '../data/schema';
 import {parseAthleteBackup} from '../data/validation';
@@ -17,7 +18,7 @@ const id=()=>`${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
 export function MoreScreen(){
  const {data,update,replace}=useAthlete();const [area,setArea]=useState('Habits');const [habitOpen,setHabitOpen]=useState(false);const [newHabit,setNewHabit]=useState('');const [nutritionOpen,setNutritionOpen]=useState(false);const [cal,setCal]=useState('');const [protein,setProtein]=useState('');const [carbs,setCarbs]=useState('');const [fat,setFat]=useState('');const [name,setName]=useState(data.profile.name);const [rest,setRest]=useState(String(data.settings.restSeconds));const [showWeight,setShowWeight]=useState(data.settings.showWeightOnShare);
  const [recoveryOpen,setRecoveryOpen]=useState(false),[recoveryDate,setRecoveryDate]=useState(dateKey()),[sleep,setSleep]=useState(''),[energy,setEnergy]=useState(''),[soreness,setSoreness]=useState(''),[recoveryNote,setRecoveryNote]=useState('');
- const storyRef=useRef<View>(null);const today=dateKey();const checks=data.habitChecks[today]||[];const points=checks.length*20;const days=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];const adherence=weeklyAdherence(data);
+ const storyRef=useRef<ViewInstance>(null);const today=dateKey();const checks=data.habitChecks[today]||[];const points=checks.length*20;const days=['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];const adherence=weeklyAdherence(data);
  const saveRecovery=()=>{
   const hours=sleep.trim()?numberInput(sleep):undefined,en=energy.trim()?numberInput(energy):undefined,so=soreness.trim()?numberInput(soreness):undefined;
   if(!validateDate(recoveryDate)||recoveryDate>dateKey()||[hours,en,so].some(v=>v===null)||

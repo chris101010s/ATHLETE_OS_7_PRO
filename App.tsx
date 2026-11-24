@@ -43,4 +43,4 @@ function Main(){const {data,ready,fault,faultOrigin,replace,retrySave}=useAthlet
  <View style={{position:'absolute',bottom:0,left:0,right:0}}><GlassBar>{tabs.map(([key,label])=><Pressable accessibilityRole="tab" accessibilityState={{selected:tab===key}} onPress={()=>setTab(key)} key={key} style={{flex:1,alignItems:'center',paddingTop:4,paddingBottom:2,gap:2}}><TabIcon name={key} active={tab===key}/><Text style={{fontSize:10,fontWeight:tab===key?'800':'600',color:tab===key?color.blue:color.muted}}>{label}</Text></Pressable>)}</GlassBar></View>
  </View>
 }
-export default function App(){return <SafeAreaProvider><StatusBar barStyle="dark-content" backgroundColor={color.bg}/><SafeAreaView style={{flex:1,backgroundColor:color.bg}} edges={['top','bottom']}><AthleteProvider><Main/></AthleteProvider></SafeAreaView></SafeAreaProvider>}
+export default function App(){return <SafeAreaProvider><StatusBar barStyle="dark-content"/><SafeAreaView style={{flex:1,backgroundColor:color.bg}} edges={['top','bottom']}><AthleteProvider><Main/></AthleteProvider></SafeAreaView></SafeAreaProvider>}
