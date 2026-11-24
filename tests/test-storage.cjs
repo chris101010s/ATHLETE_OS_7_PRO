@@ -1,8 +1,11 @@
 const ts=require('typescript'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),Module=require('node:module');
 const dir=path.resolve(__dirname,'../src/data'),files=new Map();
 const db=new Map();let failWrites=false;
+// Both TypeScript 5 and TypeScript 6 may apply ESM/CJS default-import interop.
+// The real Expo module exposes a default export; our mock must do the same.
 const KV={getItem:async k=>db.get(k)??null,setItem:async(k,v)=>{if(failWrites)throw Error('disk full');db.set(k,v)}};
-function load(name){if(files.has(name))return files.get(name);const file=path.join(dir,name+'.ts');const js=ts.transpileModule(fs.readFileSync(file,'utf8'),{fileName:file,compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText;const mod=new Module(file,module);mod.filename=file;mod.paths=Module._nodeModulePaths(dir);const prev=Module._load;Module._load=function(req,parent,isMain){if(req==='expo-sqlite/kv-store')return {default:KV};if(req.startsWith('./')&&parent?.filename===file)return load(req.slice(2));return prev.call(this,req,parent,isMain)};try{mod._compile(js,file)}finally{Module._load=prev}files.set(name,mod.exports);return mod.exports;}
+const KV_ESM={__esModule:true,default:KV};
+function load(name){if(files.has(name))return files.get(name);const file=path.join(dir,name+'.ts');const js=ts.transpileModule(fs.readFileSync(file,'utf8'),{fileName:file,compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText;const mod=new Module(file,module);mod.filename=file;mod.paths=Module._nodeModulePaths(dir);const prev=Module._load;Module._load=function(req,parent,isMain){if(req==='expo-sqlite/kv-store')return KV_ESM;if(req.startsWith('./')&&parent?.filename===file)return load(req.slice(2));return prev.call(this,req,parent,isMain)};try{mod._compile(js,file)}finally{Module._load=prev}files.set(name,mod.exports);return mod.exports;}
 const {emptyData}=load('schema'),{saveData,loadData}=load('storage');
 (async()=>{
  let count=0;const eq=(a,b)=>{count++;assert.deepEqual(a,b)};
