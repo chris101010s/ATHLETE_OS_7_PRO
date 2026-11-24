@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "ATHLETE OS 7",
+    "slug": "athlete-os",
+    "scheme": "athleteos",
+    "version": "7.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#F7F8FB",
+    "ios": {
+      "bundleIdentifier": "app.athleteos.personal",
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Optional: ein Foto für deine persönliche Body-Scan-Auswertung auswählen.",
+        "NSCameraUsageDescription": "Optional: ein Foto eines Body-Scan-Berichts aufnehmen.",
+        "UIFileSharingEnabled": true,
+        "LSSupportsOpeningDocumentsInPlace": true
+      },
+      "icon": "./assets/icon.png"
+    },
+    "android": {
+      "package": "app.athleteos.personal"
+    },
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "plugins": [
+      "expo-document-picker",
+      "expo-image-picker"
+    ],
+    "extra": {
+      "privacy": "All personal data remains on device until user explicitly exports or shares it."
+    },
+    "icon": "./assets/icon.png"
+  }
+}

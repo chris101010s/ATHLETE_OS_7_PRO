@@ -1,0 +1,64 @@
+name: ATHLETE OS 7 – iOS IPA (unsigned)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'App.tsx'
+      - 'app.json'
+      - 'assets/**'
+      - 'tsconfig.json'
+      - 'package-lock.json'
+      - 'package.json'
+      - 'src/**'
+      - 'docs/**'
+      - 'tests/**'
+      - 'scripts/fetch-exercises.mjs'
+      - 'modules/**'
+      - 'scripts/build-ios-unsigned.sh'
+      - '.github/workflows/ios-unsigned.yml'
+permissions:
+  contents: read
+jobs:
+  iphone:
+    name: iPhone Release App ohne Signatur
+    runs-on: xcode-27
+    timeout-minutes: 65
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.16.0'
+      - name: Verfügbare Xcode-Version anzeigen
+        run: xcodebuild -version
+      - name: Expo Abhängigkeiten installieren
+        run: npm install --no-audit --no-fund
+      - name: Expo Paketversionen angleichen
+        run: npx expo install --fix --npm
+      - name: Offiziellen Übungskatalog abrufen (mit Offline-Fallback)
+        run: npm run catalog:fetch
+      - name: Tests und TypeScript prüfen
+        run: npm run check
+      - name: Native iOS Projekt generieren
+        run: npx expo prebuild -p ios --clean --no-install
+        env:
+          CI: '1'
+          EXPO_NO_TELEMETRY: '1'
+      - name: CocoaPods installieren
+        run: |
+          cd ios
+          pod install
+      - name: App ohne Apple-Signatur bauen
+        run: bash scripts/build-ios-unsigned.sh
+        env:
+          CI: '1'
+          EXPO_NO_TELEMETRY: '1'
+      - name: Unsignierte IPA als Download bereitstellen
+        uses: actions/upload-artifact@v4
+        with:
+          name: ATHLETE_OS_unsigned_IPA
+          path: artifacts/ATHLETE_OS_unsigned.ipa
+          retention-days: 14
+          if-no-files-found: error
